@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { format, formatDistanceToNow } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 
@@ -57,19 +57,16 @@ export function Post({ author, contents, tags, publishedAt }) {
 
             <div className={styles.content}>
                 {
-                    contents.map((content) => {
+                    contents.map((content, index) => {
                         return content.type === 'paragraph' ?
-                            <p>{content.text}</p>
-                            : <p><a href='#'> {content.text}</a></p>
+                            <p key={index}>{content.text}</p>
+                            : <p key={index}><a href='#'> {content.text}</a></p>
                     })
                 }
                 {
                     tags.map((tag) => {
                         return (
-                            <>
-                                <a href="#">{tag}</a>
-                                {'  '}
-                            </>
+                            <a href="#" key={tag}>{tag}</a>
                         )
                     })
                 }
@@ -92,7 +89,7 @@ export function Post({ author, contents, tags, publishedAt }) {
                 {
                     comments.map((comment) => {
                         return (
-                            <Comment text={comment} />
+                            <Comment key={comment} text={comment} />
                         )
                     })
                 }
