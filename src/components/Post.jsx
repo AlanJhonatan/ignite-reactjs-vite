@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { format, formatDistanceToNow } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 
@@ -6,7 +7,13 @@ import { Comment } from './Comment'
 
 import styles from './Post.module.css'
 
-export function Post({ author, contents, tags, publishedAt }) {
+export function Post({ author, contents, tags, publishedAt }) {    
+    const [comments, setComments] = useState([
+        'Que daora !'
+    ])
+
+    const [commentText, setCommentText] = useState('')
+    
     const publishedDateFormatted = format(
         publishedAt, 
         "d 'de' LLLL 'às' HH:mm'h'",
@@ -23,7 +30,17 @@ export function Post({ author, contents, tags, publishedAt }) {
         }
     )
 
-    
+    function handleCreateNewComment(event) {
+        event.preventDefault()
+        
+        setComments([...comments, commentText])
+        setCommentText('')
+    }
+
+    function handleNewCommentChange(event) {
+        setCommentText(event.target.value)
+    }
+
     return (
         <article className={styles.post}>
             <header>
@@ -62,17 +79,23 @@ export function Post({ author, contents, tags, publishedAt }) {
                 <strong>Deixe seu feedback</strong>
                 <textarea 
                     placeholder='Deixe um comentário'
+                    onChange={handleNewCommentChange}
+                    value={commentText}
                 />
 
                 <footer>
-                    <button type='submit'>Publicar</button>
+                    <button type='submit' onClick={handleCreateNewComment}>Publicar</button>
                 </footer>
             </form>
 
             <div className={styles.commentList}>
-                <Comment />
-                <Comment />
-                <Comment />
+                {
+                    comments.map((comment) => {
+                        return (
+                            <Comment text={comment} />
+                        )
+                    })
+                }
             </div>
         </article>
     )
