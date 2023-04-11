@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react'
 import { format, formatDistanceToNow } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 
@@ -7,7 +7,25 @@ import { Comment } from './Comment'
 
 import styles from './Post.module.css'
 
-export function Post({ author, contents, tags, publishedAt }) {    
+interface Author {
+    avatarUrl: string
+    name: string
+    role: string
+}
+
+interface Content {
+    type: 'paragraph' | 'link'
+    text: string
+}
+
+interface PostProps {
+    author: Author
+    publishedAt: Date
+    contents: Content[]
+    tags: string[]
+}
+
+export function Post({ author, contents, tags, publishedAt }: PostProps) {    
     const [comments, setComments] = useState([
         'Que daora !'
     ])
@@ -30,23 +48,24 @@ export function Post({ author, contents, tags, publishedAt }) {
         }
     )
 
-    function handleCreateNewComment() {
+    function handleCreateNewComment(event: FormEvent) {
+        event.preventDefault()
         if(!commentText) return
         
         setComments([...comments, commentText])
         setCommentText('')
     }
 
-    function handleNewCommentChange(event) {
+    function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
         event.target.setCustomValidity('')
         setCommentText(event.target.value)
     }
 
-    function handleNewCommentInvalid() {
+    function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
         event.target.setCustomValidity('Este campo é obrigatório !!!')
     }
 
-    function deleteComment(comment) {
+    function deleteComment(comment: string) {
         setComments((prevState) => prevState.filter((item) => item !== comment))
     }
 
