@@ -18,14 +18,19 @@ interface Content {
     text: string
 }
 
-interface PostProps {
+export interface PostType {
+    id: number
     author: Author
     publishedAt: Date
     contents: Content[]
     tags: string[]
 }
 
-export function Post({ author, contents, tags, publishedAt }: PostProps) {    
+interface PostProps {
+    post: PostType
+}
+
+export function Post({ post }: PostProps) {    
     const [comments, setComments] = useState([
         'Que daora !'
     ])
@@ -33,7 +38,7 @@ export function Post({ author, contents, tags, publishedAt }: PostProps) {
     const [commentText, setCommentText] = useState('')
     
     const publishedDateFormatted = format(
-        publishedAt, 
+        post.publishedAt, 
         "d 'de' LLLL 'às' HH:mm'h'",
         {
             locale: ptBR
@@ -41,7 +46,7 @@ export function Post({ author, contents, tags, publishedAt }: PostProps) {
     )
 
     const publishedDateRelative = formatDistanceToNow(
-        publishedAt,
+        post.publishedAt,
         {
             addSuffix: true,
             locale: ptBR,
@@ -75,26 +80,26 @@ export function Post({ author, contents, tags, publishedAt }: PostProps) {
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar hasBorder src={author.avatarUrl} />
+                    <Avatar hasBorder src={post.author.avatarUrl} />
                     <div className={styles.authorInfo}>
-                        <strong>{author.name}</strong>
-                        <span>{author.role}</span>
+                        <strong>{post.author.name}</strong>
+                        <span>{post.author.role}</span>
                     </div>
                 </div>
 
-                <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>{publishedDateRelative}</time>
+                <time title={publishedDateFormatted} dateTime={post.publishedAt.toISOString()}>{publishedDateRelative}</time>
             </header>
 
             <div className={styles.content}>
                 {
-                    contents.map((content) => {
+                    post.contents.map((content) => {
                         return content.type === 'paragraph' ?
                             <p key={content.text}>{content.text}</p>
                             : <p key={content.text}><a href='#'> {content.text}</a></p>
                     })
                 }
                 {
-                    tags.map((tag) => {
+                    post.tags.map((tag) => {
                         return (
                             <a href="#" key={tag}>{tag}</a>
                         )
