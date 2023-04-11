@@ -41,6 +41,10 @@ export function Post({ author, contents, tags, publishedAt }) {
         setCommentText(event.target.value)
     }
 
+    function deleteComment(comment) {
+        setComments((prevState) => prevState.filter((item) => item !== comment))
+    }
+
     return (
         <article className={styles.post}>
             <header>
@@ -57,10 +61,10 @@ export function Post({ author, contents, tags, publishedAt }) {
 
             <div className={styles.content}>
                 {
-                    contents.map((content, index) => {
+                    contents.map((content) => {
                         return content.type === 'paragraph' ?
-                            <p key={index}>{content.text}</p>
-                            : <p key={index}><a href='#'> {content.text}</a></p>
+                            <p key={content.text}>{content.text}</p>
+                            : <p key={content.text}><a href='#'> {content.text}</a></p>
                     })
                 }
                 {
@@ -89,7 +93,7 @@ export function Post({ author, contents, tags, publishedAt }) {
                 {
                     comments.map((comment) => {
                         return (
-                            <Comment key={comment} text={comment} />
+                            <Comment onDeleteComment={() => deleteComment(comment)} key={comment} text={comment} />
                         )
                     })
                 }
